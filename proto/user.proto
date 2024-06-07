@@ -2,14 +2,38 @@ syntax = "proto3";
 
 package user;
 
+import 'enums.proto';
+
 service UserService {
-    rpc GetUser (UserId) returns (User) {}
+    rpc ListUser (Empty) returns (ListUserResponse);
+    rpc GetUser (UserId) returns (User);
+    rpc AddUser (AddUserRequest) returns (AddUserResponse);
+}
+
+message Empty {}
+
+message ListUserResponse {
+  repeated User users = 1;
+}
+
+message AddUserRequest {
+  string name = 1;
+  string email = 2;
+  STATUS status = 3;
+}
+
+message AddUserResponse {
+  string _id = 1;
+  string name = 2;
+  string email = 3;
+  common.STATUS status = 4;
 }
 
 message User {
     string _id = 1;
     string name = 2;
     string email = 3;
+    STATUS status = 4;
 }
 
 message UserId {

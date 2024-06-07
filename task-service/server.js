@@ -4,13 +4,30 @@ import Task from './models/task.js';
 import bodyParser from 'body-parser';
 import grpcClient from './grpcClient.js';
 
-mongoose.connect('mongodb://localhost:27017/tasks', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+mongoose.connect('mongodb://localhost:27017/tasks');
 
 const app = express();
 app.use(bodyParser.json());
+
+app.get('/user', async (req, res) => {
+  grpcClient.ListUser({}, async (error, response) => {
+    try {
+      res.status(201).json(response);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+});
+
+app.post('/user', async (req, res) => {
+  grpcClient.AddUser(req.body, async (error, response) => {
+    try {
+      res.status(201).json(response);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+});
 
 app.post('/tasks', async (req, res) => {
   const { userId } = req.body;
